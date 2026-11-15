@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {KEY,save,load,filterEntries,markdown,backup,parseBackup,mergeEntries,validDate} from '../core.js';
+import {safeStyle} from '../html.js';
 const make=(over={})=>({id:'one',week:'2026-11-09',title:'週間レビュー',body:'## 投資\n市場の動向\n## AI\n生成AI',updatedAt:'2026-11-15T12:00:00Z',...over});
 function storage(){const map=new Map();return {getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v)};}
 test('保存→再読み込み→編集→再読み込み→削除',()=>{const s=storage();save(s,[make()]);assert.deepEqual(load(s),[make()]);const edited=make({body:'編集した本文',updatedAt:'2026-11-16T12:00:00Z'});save(s,[edited]);assert.equal(load(s)[0].body,'編集した本文');save(s,[]);assert.deepEqual(load(s),[]);});
@@ -11,3 +12,5 @@ test('検索・月フィルター・新しい順',()=>{const rows=[make(),make({
 test('表・見出し・コード・箇条書き・HTML無害化',()=>{const html=markdown('## 投資\n\n## AI\n\n| 項目 | 数値 |\n| --- | --- |\n| 株価 | 100 |\n\n- 項目\n\n```\nA → B\n<script>alert(1)</script>\n```\n\n<img src=x onerror=alert(1)>');assert.match(html,/investment/);assert.match(html,/ai-heading/);assert.match(html,/<table>/);assert.match(html,/<li>項目/);assert.match(html,/A → B/);assert.ok(!html.includes('<script>'));assert.ok(!html.includes('<img'));});
 test('保存失敗は呼び出し元へ伝わり既存データが残る',()=>{const s=storage();save(s,[make()]);s.setItem=()=>{throw Error('QuotaExceededError');};assert.throws(()=>save(s,[]));assert.equal(load(s).length,1);});
 test('壊れた保存領域を空配列として上書きしない',()=>{const s=storage();s.setItem(KEY,'broken');assert.throws(()=>load(s));assert.equal(s.getItem(KEY),'broken');});
+test('HTMLを保存・編集しバックアップ復元しても形式と原文を保持',()=>{const s=storage();const r=make({format:'html',body:'<h2>投資</h2><table><tr><td>100</td></tr></table>'});save(s,[r]);assert.deepEqual(load(s),[r]);const edited={...load(s)[0],body:r.body+'<p>追記</p>'};save(s,[edited]);assert.deepEqual(parseBackup(backup(load(s))),[edited]);assert.throws(()=>save(s,[make({format:'unknown'})]));});
+test('HTMLの安全な文字装飾だけを許可',()=>{assert.equal(safeStyle('color:#123456; background-color:rgb(1, 2, 3);text-align:center;font-weight:700'),'color:#123456;background-color:rgb(1, 2, 3);text-align:center;font-weight:700');assert.equal(safeStyle('background:url(https://example.com);color:expression(alert(1));position:fixed;z-index:999;display:none;color:var(--bad);font-size:999px'), '');});

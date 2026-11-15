@@ -5,7 +5,7 @@ iPhoneのSafariを主対象にした、依存ライブラリなしの静的Web�
 ## GitHub Pagesで無料公開（iPhoneから可能）
 
 1. GitHubにログインし、**新しいPublicリポジトリ** `invest-ai-weekly-vault` を作成します。既存プロジェクトは使いません。無料プランでは公開リポジトリを使います。
-2. このフォルダ内の `index.html`、`style.css`、`app.js`、`core.js`、`sw.js`、`manifest.webmanifest`、`icon.png`、`icon-512.png` をリポジトリ直下へアップロードし、コミットします。iPhoneではZIPを「ファイル」で展開し、GitHubの「Add file → Upload files」を利用します。
+2. このフォルダ内の `index.html`、`style.css`、`app.js`、`core.js`、`html.js`、`sw.js`、`manifest.webmanifest`、`icon.png`、`icon-512.png` をリポジトリ直下へアップロードし、コミットします。iPhoneではZIPを「ファイル」で展開し、GitHubの「Add file → Upload files」を利用します。
 3. リポジトリの **Settings → Pages → Build and deployment** で **Deploy from a branch / main / (root)** を選び、Saveします。
 4. 数分後、Pages画面に表示される `https://ユーザー名.github.io/invest-ai-weekly-vault/` をSafariで開きます。
 5. Safariの共有ボタン → **ホーム画面に追加** を選択します。以後はホーム画面から開くと保存領域を統一できます。
@@ -31,7 +31,7 @@ git push -u origin main
 
 ## 書式
 
-Markdownの見出し、太字、表、箇条書き、引用、コードブロックに対応。表とコードは横スクロール。HTMLは実行せず文字として表示します。画像やリッチテキストの貼り付け、複雑な入れ子、Mermaidの描画には対応していません。テキスト図解はコードブロックで囲むと配置を保持できます。
+Markdownの見出し、太字、表、箇条書き、引用、コードブロックに対応。表とコードは横スクロール。本文形式にHTMLを選ぶと、HTMLソースやHTML書式付きコピーの貼り付けに対応します。見出し・表・基本装飾・安全なインライン文字色を保持し、スクリプト・画像・外部CSS・埋め込み・イベント属性を除去します。Markdown形式ではHTMLを文字として表示します。画像の貼り付け、複雑な入れ子、Mermaidの描画には対応していません。テキスト図解はコードブロックで囲むと配置を保持できます。
 
 ## 検証
 

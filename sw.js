@@ -1,4 +1,4 @@
-const CACHE='invest-ai-shell-v1';const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./manifest.webmanifest','./icon.png','./icon-512.png'];
+const CACHE='invest-ai-shell-v2';const ASSETS=['./','./index.html','./style.css','./app.js','./core.js','./html.js','./manifest.webmanifest','./icon.png','./icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('invest-ai-shell-')&&k!==CACHE).map(k=>caches.delete(k)))));});
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==location.origin)return;e.respondWith(fetch(e.request).then(r=>r).catch(()=>caches.match(e.request).then(r=>r||(e.request.mode==='navigate'?caches.match('./index.html'):Response.error()))));});
